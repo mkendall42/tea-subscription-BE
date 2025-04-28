@@ -20,16 +20,14 @@ RSpec.describe "SubscriptionsController requests", type: :request do
       get api_v1_subscriptions_path
       subscriptions_info = JSON.parse(response.body, symbolize_names: true)
 
-      binding.pry
-
-      # expect(response).to be_successful
-      # expect(subscriptions_info).to have_key(:data)
-      # expect(subscriptions_info[:data]).to have_key(:subscription_titles)
-      # expect(subscriptions_info[:data][:subscription_titles]).to be_a(Array)
-      # expect(subscriptions_info[:data][:subscription_titles].length).to eq(3)
-      # expect(subscriptions_info[:data][:subscription_titles][1]).to eq("My Chai bundle")
-      # expect(subscriptions_info[:data]).to have_key(:total_subscriptions)
-      # expect(subscriptions_info[:data][:total_subscriptions]).to eq(3)
+      expect(response).to be_successful
+      expect(subscriptions_info).to have_key(:data)
+      expect(subscriptions_info[:data]).to have_key(:subscription_titles)
+      expect(subscriptions_info[:data][:subscription_titles]).to be_a(Array)
+      expect(subscriptions_info[:data][:subscription_titles].length).to eq(3)
+      expect(subscriptions_info[:data][:subscription_titles][1]).to eq("My Chai bundle")
+      expect(subscriptions_info[:data]).to have_key(:total_subscriptions)
+      expect(subscriptions_info[:data][:total_subscriptions]).to eq(3)
     end
 
   end

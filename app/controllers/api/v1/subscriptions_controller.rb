@@ -1,7 +1,7 @@
 class Api::V1::SubscriptionsController < ApplicationController
   def index
     #Get all subscriptions
-    render json: { key: "value" }
+    render json: SubscriptionsSerializer.format_subscriptions
   end
 
   #index - get all
