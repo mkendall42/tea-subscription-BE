@@ -13,6 +13,10 @@ Please see below for details regarding consumable / accessible endpoints.
 
 Mention a few gems?  Mention tests (how to run them / check separately), bundle install and db setup, etc.
 
+## Database structure
+
+- Tea temperature is in Celsius (need to be sensible)
+
 ## Endpoints
 
 For each endpoint, (request type, path, params, incoming body, response body, JSON structure, response statuses, other notes)
