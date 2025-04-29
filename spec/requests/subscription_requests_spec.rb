@@ -76,7 +76,7 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         expect(error_message[:status]).to eq(404)
         expect(error_message[:status]).to eq(404)
         expect(error_message).to have_key(:message)
-        expect(error_message[:message]).to eq("Couldn't find Subscription with 'id'=10000")
+        expect(error_message[:message]).to eq("Couldn't find Subscription with 'id'=#{invalid_id}")
       end
 
 
@@ -109,7 +109,49 @@ RSpec.describe "SubscriptionsController requests", type: :request do
     end
 
     context "sad paths" do
-      it "" do
+      it "invalid ID / subscription to update not found" do
+        invalid_id = 10001
+        update_params = { status: "cancelled" }
+        patch api_v1_subscription_path(invalid_id), params: update_params, as: :json
+        error_message = JSON.parse(response.body, symbolize_names: true) 
+
+        expect(response).to_not be_successful
+        expect(error_message).to have_key(:status)
+        expect(error_message[:status]).to eq(404)
+        expect(error_message[:status]).to eq(404)
+        expect(error_message).to have_key(:message)
+        expect(error_message[:message]).to eq("Couldn't find Subscription with 'id'=#{invalid_id}")
+      end
+
+      it "no error occurs when attempting to set status to same value" do
+        update_params = { status: "cancelled" }
+        patch api_v1_subscription_path(@subscription3.id), params: update_params, as: :json
+        updated_subscription_info = JSON.parse(response.body, symbolize_names: true)
+        
+        expect(response).to be_successful
+        expect(updated_subscription_info[:data][:subscription_id]).to eq(@subscription3.id)
+        expect(updated_subscription_info[:data][:old_status]).to eq(updated_subscription_info[:data][:new_status])
+      end
+
+      it "additional / invalid params do not change anything beyond 'status'" do
+        update_params = {
+          status: "cancelled",
+          customer_id: @customer1.id,
+          created_at: DateTime.now,
+          random_param: "I'm sneakin' in!"
+        }
+        patch api_v1_subscription_path(@subscription2.id), params: update_params, as: :json
+        updated_subscription_info = JSON.parse(response.body, symbolize_names: true)
+
+        expect(response).to be_successful
+        expect(updated_subscription_info[:data][:subscription_id]).to eq(@subscription2.id)
+        expect(updated_subscription_info[:data][:old_status]).to eq("active")
+        expect(updated_subscription_info[:data][:new_status]).to eq("cancelled")
+        expect(Subscription.find(@subscription2.id).customer_id).to eq(@customer2.id)
+        expect{ (Subscription.pluck(:random_param)) }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+
+      it "invalid 'status' string generates appropriate error" do
 
       end
 
