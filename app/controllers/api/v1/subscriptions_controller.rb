@@ -4,7 +4,10 @@ class Api::V1::SubscriptionsController < ApplicationController
     render json: SubscriptionsSerializer.format_subscriptions
   end
 
-  #index - get all
-  #show - get details of one
+  def show
+    #Get details for one subscription
+    render json: { key: "value" }
+  end
+
   #update - change the status of one
 end

@@ -11,8 +11,8 @@ RSpec.describe "SubscriptionsController requests", type: :request do
     @tea3 = Tea.create!(title: "Mint", description: "Potent spice - must be stored separately", temperature: 75, brew_time: 90)
     #Associate 'em via subscriptions
     @subscription1 = Subscription.create!(title: "Early Gray standard issue", status: "active", price: 44.95, frequency: 4.2, customer_id: @customer1.id, tea_id: @tea1.id)
-    @subscription1 = Subscription.create!(title: "My Chai bundle", status: "active", price: 64.00, frequency: 5, customer_id: @customer2.id, tea_id: @tea2.id)
-    @subscription1 = Subscription.create!(title: "Mint seasonal deal", status: "cancelled", price: 29.99, frequency: 2.5, customer_id: @customer2.id, tea_id: @tea3.id)
+    @subscription2 = Subscription.create!(title: "My Chai bundle", status: "active", price: 64.00, frequency: 5, customer_id: @customer2.id, tea_id: @tea2.id)
+    @subscription3 = Subscription.create!(title: "Mint seasonal deal", status: "cancelled", price: 29.99, frequency: 2.5, customer_id: @customer2.id, tea_id: @tea3.id)
   end
 
   describe "#index - get all subscriptions" do
@@ -30,5 +30,48 @@ RSpec.describe "SubscriptionsController requests", type: :request do
       expect(subscriptions_info[:data][:total_subscriptions]).to eq(3)
     end
 
+  end
+
+  describe "#show - get details for a single subscription" do
+    context "happy paths" do
+      it "correctly returns all data for single subscription" do
+        get api_v1_subscription_path(@subscription3.id)
+        detailed_info = JSON.parse(response.body, symbolize_names: true)
+
+        binding.pry
+
+        # expect(response).to be_successful
+        # expect(detailed_info).to have_key(:data)
+        # expect(detailed_info[:data]).to have_key(:title)
+        # expect(detailed_info[:data][:title]).to eq("Mint seasonal deal")
+
+        # expect(detailed_info[:data]).to have_key(:customer)
+        # expect(detailed_info[:data][:customer][:first_name]).to eq("Kathryn")
+        # expect(detailed_info[:data][:customer][:last_name]).to eq("Janeway")
+        # expect(detailed_info[:data][:customer][:id]).to eq(@customer2.id)
+
+        # expect(detailed_info[:data]).to have_key(:tea)
+        # expect(detailed_info[:data][:tea][:title]).to eq("Mint")
+        # expect(detailed_info[:data][:tea][:id]).to eq(@tea3.id)
+
+        # expect(detailed_info[:data]).to have_key(:status)
+        # expect(detailed_info[:data][:status]).to eq("cancelled")
+
+        # expect(detailed_info[:data]).to have_key(:price)
+        # expect(detailed_info[:data][:price]).to eq(29.99)
+        
+        # expect(detailed_info[:data]).to have_key(:frequency)
+        # expect(detailed_info[:data][:frequency]).to eq(2.5)
+      end
+
+    end
+
+    context "sad paths" do
+      #Invalid / not found ID
+
+      #No associated customers or teas gives appropriate error / JSON response
+
+    end
+  
   end
 end
