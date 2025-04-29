@@ -152,7 +152,14 @@ RSpec.describe "SubscriptionsController requests", type: :request do
       end
 
       it "invalid 'status' string generates appropriate error" do
+        update_params = { status: "hyperactive" }
+        patch api_v1_subscription_path(@subscription1.id), params: update_params, as: :json
+        error_message = JSON.parse(response.body, symbolize_names: true)
 
+        expect(response).to_not be_successful
+        # expect(error_message[:key]).to eq("Oopsie")
+        expect(error_message[:status]).to eq(422)
+        expect(error_message[:message]).to eq("Validation failed: Status is not included in the list ('active' or 'cancelled').")
       end
 
     end
