@@ -38,30 +38,28 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         get api_v1_subscription_path(@subscription3.id)
         detailed_info = JSON.parse(response.body, symbolize_names: true)
 
-        binding.pry
+        expect(response).to be_successful
+        expect(detailed_info).to have_key(:data)
+        expect(detailed_info[:data]).to have_key(:title)
+        expect(detailed_info[:data][:title]).to eq("Mint seasonal deal")
 
-        # expect(response).to be_successful
-        # expect(detailed_info).to have_key(:data)
-        # expect(detailed_info[:data]).to have_key(:title)
-        # expect(detailed_info[:data][:title]).to eq("Mint seasonal deal")
+        expect(detailed_info[:data]).to have_key(:customer)
+        expect(detailed_info[:data][:customer][:first_name]).to eq("Kathryn")
+        expect(detailed_info[:data][:customer][:last_name]).to eq("Janeway")
+        expect(detailed_info[:data][:customer][:id]).to eq(@customer2.id)
 
-        # expect(detailed_info[:data]).to have_key(:customer)
-        # expect(detailed_info[:data][:customer][:first_name]).to eq("Kathryn")
-        # expect(detailed_info[:data][:customer][:last_name]).to eq("Janeway")
-        # expect(detailed_info[:data][:customer][:id]).to eq(@customer2.id)
+        expect(detailed_info[:data]).to have_key(:tea)
+        expect(detailed_info[:data][:tea][:title]).to eq("Mint")
+        expect(detailed_info[:data][:tea][:id]).to eq(@tea3.id)
 
-        # expect(detailed_info[:data]).to have_key(:tea)
-        # expect(detailed_info[:data][:tea][:title]).to eq("Mint")
-        # expect(detailed_info[:data][:tea][:id]).to eq(@tea3.id)
+        expect(detailed_info[:data]).to have_key(:status)
+        expect(detailed_info[:data][:status]).to eq("cancelled")
 
-        # expect(detailed_info[:data]).to have_key(:status)
-        # expect(detailed_info[:data][:status]).to eq("cancelled")
-
-        # expect(detailed_info[:data]).to have_key(:price)
-        # expect(detailed_info[:data][:price]).to eq(29.99)
+        expect(detailed_info[:data]).to have_key(:price)
+        expect(detailed_info[:data][:price]).to eq(29.99)
         
-        # expect(detailed_info[:data]).to have_key(:frequency)
-        # expect(detailed_info[:data][:frequency]).to eq(2.5)
+        expect(detailed_info[:data]).to have_key(:frequency)
+        expect(detailed_info[:data][:frequency]).to eq(2.5)
       end
 
     end

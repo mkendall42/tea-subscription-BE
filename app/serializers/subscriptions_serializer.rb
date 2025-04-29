@@ -11,4 +11,24 @@ class SubscriptionsSerializer
       }
     }
   end
+
+  def self.format_single_subscription(subscription)
+    {
+      data: {
+        title: subscription.title,
+        status: subscription.status,
+        price: subscription.price,
+        frequency: subscription.frequency,
+        customer: {
+          first_name: subscription.customer.first_name,
+          last_name: subscription.customer.last_name,
+          id: subscription.customer.id
+        },
+        tea: {
+          title: subscription.tea.title,
+          id: subscription.tea.id
+        }
+      }
+    }
+  end
 end
