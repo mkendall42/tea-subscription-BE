@@ -1,4 +1,5 @@
 class Api::V1::SubscriptionsController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :invalid_subscription
   def index
     #Get all subscriptions
     render json: SubscriptionsSerializer.format_subscriptions
@@ -12,4 +13,10 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   #update - change the status of one
+
+  private
+
+  def invalid_subscription(exception)
+    render json: { status: 404, message: exception.message }, status: 404
+  end
 end

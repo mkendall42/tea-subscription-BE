@@ -65,7 +65,20 @@ RSpec.describe "SubscriptionsController requests", type: :request do
     end
 
     context "sad paths" do
-      #Invalid / not found ID
+      it "invalid ID / subscription not found" do
+        #Invalid / not found ID
+        invalid_id = 10000
+        get api_v1_subscription_path(invalid_id)
+        error_message = JSON.parse(response.body, symbolize_names: true)   
+
+        expect(response).to_not be_successful
+        expect(error_message).to have_key(:status)
+        expect(error_message[:status]).to eq(404)
+        expect(error_message[:status]).to eq(404)
+        expect(error_message).to have_key(:message)
+        expect(error_message[:message]).to eq("Couldn't find Subscription with 'id'=10000")
+      end
+
 
       #No associated customers or teas gives appropriate error / JSON response
 
