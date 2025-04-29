@@ -12,9 +12,24 @@ class Api::V1::SubscriptionsController < ApplicationController
     render json: SubscriptionsSerializer.format_single_subscription(subscription)
   end
 
-  #update - change the status of one
+  def update
+    #update - change the status of one
+    subscription = Subscription.find(params[:id])
+
+    #Do the actual update (assuming valid params only)
+    #Probably need internal error/exception handling in here (might separate into new and save)
+    subscription.update!(subscription_params)
+
+    binding.pry
+
+    render json: { key: "value" }
+  end
 
   private
+
+  def subscription_params
+    params.permit(:id, :status)
+  end
 
   def invalid_subscription(exception)
     render json: { status: 404, message: exception.message }, status: 404

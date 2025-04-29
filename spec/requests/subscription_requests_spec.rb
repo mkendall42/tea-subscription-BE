@@ -6,11 +6,11 @@ RSpec.describe "SubscriptionsController requests", type: :request do
     @customer1 = Customer.create!(first_name: "Jean Luc", last_name: "Picard", email: "jpicard_tng@federation.gov", address: "1701D: 001")
     @customer2 = Customer.create!(first_name: "Kathryn", last_name: "Janeway", email: "kjaneway_voy@federation.gov", address: "1701E: 001")
     #Create teas
-    @tea1 = Tea.create!(title: "Earl Gray", description: "Only one way to be served: hot", temperature: 90, brew_time: 150)
+    @tea1 = Tea.create!(title: "Earl Grey", description: "Only one way to be served: hot", temperature: 90, brew_time: 150)
     @tea2 = Tea.create!(title: "Chai", description: "A good combo of spices", temperature: 80, brew_time: 100)
     @tea3 = Tea.create!(title: "Mint", description: "Potent spice - must be stored separately", temperature: 75, brew_time: 90)
     #Associate 'em via subscriptions
-    @subscription1 = Subscription.create!(title: "Early Gray standard issue", status: "active", price: 44.95, frequency: 4.2, customer_id: @customer1.id, tea_id: @tea1.id)
+    @subscription1 = Subscription.create!(title: "Earl Grey standard issue", status: "active", price: 44.95, frequency: 4.2, customer_id: @customer1.id, tea_id: @tea1.id)
     @subscription2 = Subscription.create!(title: "My Chai bundle", status: "active", price: 64.00, frequency: 5, customer_id: @customer2.id, tea_id: @tea2.id)
     @subscription3 = Subscription.create!(title: "Mint seasonal deal", status: "cancelled", price: 29.99, frequency: 2.5, customer_id: @customer2.id, tea_id: @tea3.id)
   end
@@ -83,6 +83,33 @@ RSpec.describe "SubscriptionsController requests", type: :request do
       #No associated customers or teas gives appropriate error / JSON response
 
     end
-  
   end
+
+  describe "#update - change or cancel subscription" do
+    context "happy paths" do
+      it "successfully cancels an active subscription" do
+        #Cancel the Earl Grey for Picard - i.e. something that would NEVER happen
+        #Do I need more detailed headers / is it better practice?  Or is the lower one truly the same (just shorthand)?
+        # headers = {"CONTENT_TYPE" => "application/json"}
+        # patch api_v1_subscription_path(@subscription1.id), params: JSON.generate(update_params), headers: headers
+        update_params = { status: "cancelled" }
+        patch api_v1_subscription_path(@subscription1.id), params: update_params, as: :json
+        updated_subscription_info = JSON.parse(response.body)
+        # get api_v1_subscription_path(@subscription3.id)
+        
+        binding.pry
+
+        expect(response).to be_successful
+      end
+
+    end
+
+    context "sad paths" do
+      it "" do
+
+      end
+
+    end
+  end
+
 end
