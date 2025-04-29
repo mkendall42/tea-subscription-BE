@@ -15,14 +15,15 @@ class Api::V1::SubscriptionsController < ApplicationController
   def update
     #update - change the status of one
     subscription = Subscription.find(params[:id])
-
+    old_status = subscription.status
     #Do the actual update (assuming valid params only)
     #Probably need internal error/exception handling in here (might separate into new and save)
     subscription.update!(subscription_params)
 
-    binding.pry
+    # binding.pry
 
-    render json: { key: "value" }
+    # render json: { key: "value" }
+    render json: SubscriptionsSerializer.format_updated_subscription(subscription, old_status)
   end
 
   private

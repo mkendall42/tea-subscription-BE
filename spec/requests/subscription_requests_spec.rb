@@ -94,12 +94,16 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         # patch api_v1_subscription_path(@subscription1.id), params: JSON.generate(update_params), headers: headers
         update_params = { status: "cancelled" }
         patch api_v1_subscription_path(@subscription1.id), params: update_params, as: :json
-        updated_subscription_info = JSON.parse(response.body)
-        # get api_v1_subscription_path(@subscription3.id)
+        updated_subscription_info = JSON.parse(response.body, symbolize_names: true)
         
-        binding.pry
-
         expect(response).to be_successful
+        expect(updated_subscription_info).to have_key(:data)
+        expect(updated_subscription_info[:data]).to have_key(:subscription_id)
+        expect(updated_subscription_info[:data][:subscription_id]).to eq(@subscription1.id)
+        expect(updated_subscription_info[:data]).to have_key(:old_status)
+        expect(updated_subscription_info[:data][:old_status]).to eq("active")
+        expect(updated_subscription_info[:data]).to have_key(:new_status)
+        expect(updated_subscription_info[:data][:new_status]).to eq("cancelled")
       end
 
     end

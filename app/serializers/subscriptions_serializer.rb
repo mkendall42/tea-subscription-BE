@@ -31,4 +31,14 @@ class SubscriptionsSerializer
       }
     }
   end
+
+  def self.format_updated_subscription(subscription, old_status)
+    {
+      data: {
+        subscription_id: subscription.id,
+        old_status: old_status,
+        new_status: subscription.status
+      }
+    }
+  end
 end
