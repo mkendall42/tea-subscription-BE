@@ -14,7 +14,7 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def update
-    #update - change the status of one subscription
+    #update - change the status of one subscription (with validation)
     subscription = Subscription.find(params[:id])
     old_status = subscription.status
 
