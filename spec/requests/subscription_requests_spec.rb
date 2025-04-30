@@ -22,10 +22,22 @@ RSpec.describe "SubscriptionsController requests", type: :request do
 
       expect(response).to be_successful
       expect(subscriptions_info).to have_key(:data)
-      expect(subscriptions_info[:data]).to have_key(:subscription_titles)
-      expect(subscriptions_info[:data][:subscription_titles]).to be_a(Array)
-      expect(subscriptions_info[:data][:subscription_titles].length).to eq(3)
-      expect(subscriptions_info[:data][:subscription_titles][1]).to eq("My Chai bundle")
+      # expect(subscriptions_info[:data]).to have_key(:subscription_titles)
+      # expect(subscriptions_info[:data][:subscription_titles]).to be_a(Array)
+      # expect(subscriptions_info[:data][:subscription_titles].length).to eq(3)
+      # expect(subscriptions_info[:data][:subscription_titles][1]).to eq("My Chai bundle")
+      expect(subscriptions_info[:data]).to have_key(:subscriptions)
+      subscriptions_info[:data][:subscriptions].each do |subscription|
+        expect(subscription).to have_key(:title)
+        expect(subscription[:title]).to be_a(String)
+        expect(subscription).to have_key(:id)
+        expect(subscription[:id]).to be_a(Integer)
+        expect(subscription).to have_key(:status)
+        expect(["active", "cancelled"]).to include(subscription[:status])
+      end
+      expect(subscriptions_info[:data][:subscriptions][1][:title]).to eq("My Chai bundle")
+      expect(subscriptions_info[:data][:subscriptions][1][:id]).to eq(@subscription2.id)
+      expect(subscriptions_info[:data][:subscriptions][1][:status]).to eq("active")
       expect(subscriptions_info[:data]).to have_key(:total_subscriptions)
       expect(subscriptions_info[:data][:total_subscriptions]).to eq(3)
     end
@@ -40,6 +52,8 @@ RSpec.describe "SubscriptionsController requests", type: :request do
 
         expect(response).to be_successful
         expect(detailed_info).to have_key(:data)
+        expect(detailed_info[:data]).to have_key(:id)
+        expect(detailed_info[:data][:id]).to eq(@subscription3.id)
         expect(detailed_info[:data]).to have_key(:title)
         expect(detailed_info[:data][:title]).to eq("Mint seasonal deal")
 

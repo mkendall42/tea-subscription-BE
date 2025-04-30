@@ -4,9 +4,23 @@ class SubscriptionsSerializer
       subscription.title
     end
 
+    subscriptions_info = Subscription.all.map do |subscription|
+      {
+        title: subscription.title,
+        id: subscription.id,
+        status: subscription.status
+      }
+    end
+
+    # {
+    #   data: {
+    #     subscription_titles: titles,
+    #     total_subscriptions: Subscription.count
+    #   }
+    # }
     {
       data: {
-        subscription_titles: titles,
+        subscriptions: subscriptions_info,
         total_subscriptions: Subscription.count
       }
     }
@@ -15,6 +29,7 @@ class SubscriptionsSerializer
   def self.format_single_subscription(subscription)
     {
       data: {
+        id: subscription.id,
         title: subscription.title,
         status: subscription.status,
         price: subscription.price,
