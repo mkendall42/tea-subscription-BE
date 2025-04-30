@@ -35,13 +35,18 @@ class SubscriptionsSerializer
         price: subscription.price,
         frequency: subscription.frequency,
         customer: {
+          id: subscription.customer.id,
           first_name: subscription.customer.first_name,
           last_name: subscription.customer.last_name,
-          id: subscription.customer.id
+          email: subscription.customer.email,
+          address: subscription.customer.address
         },
         tea: {
+          id: subscription.tea.id,
           title: subscription.tea.title,
-          id: subscription.tea.id
+          description: subscription.tea.description,
+          temperature: subscription.tea.temperature,
+          brew_time: subscription.tea.brew_time
         }
       }
     }

@@ -27,7 +27,9 @@ class Api::V1::SubscriptionsController < ApplicationController
     #   render json: { key: "Oopsie" }, status: :unprocessable_entity
     #   return
     # end
+    #NOTE: checking something (based on :subscription param issue)
     subscription.update!(subscription_params)
+    # subscription.update!(params)
 
     #Alternate approach: do the new and save separately and handle the error there...
 
@@ -41,6 +43,7 @@ class Api::V1::SubscriptionsController < ApplicationController
   private
 
   def subscription_params
+    #NOTE: checking something here (added :subscription)
     params.permit(:id, :status)
   end
 

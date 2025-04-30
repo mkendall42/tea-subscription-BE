@@ -61,10 +61,15 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         expect(detailed_info[:data][:customer][:first_name]).to eq("Kathryn")
         expect(detailed_info[:data][:customer][:last_name]).to eq("Janeway")
         expect(detailed_info[:data][:customer][:id]).to eq(@customer2.id)
+        expect(detailed_info[:data][:customer][:email]).to eq("kjaneway_voy@federation.gov")
+        expect(detailed_info[:data][:customer][:address]).to eq("1701E: 001")
 
         expect(detailed_info[:data]).to have_key(:tea)
         expect(detailed_info[:data][:tea][:title]).to eq("Mint")
         expect(detailed_info[:data][:tea][:id]).to eq(@tea3.id)
+        expect(detailed_info[:data][:tea][:description]).to eq("Potent spice - must be stored separately")
+        expect(detailed_info[:data][:tea][:temperature]).to eq(75)
+        expect(detailed_info[:data][:tea][:brew_time]).to eq(90)
 
         expect(detailed_info[:data]).to have_key(:status)
         expect(detailed_info[:data][:status]).to eq("cancelled")
