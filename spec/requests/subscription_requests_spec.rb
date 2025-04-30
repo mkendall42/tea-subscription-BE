@@ -22,10 +22,6 @@ RSpec.describe "SubscriptionsController requests", type: :request do
 
       expect(response).to be_successful
       expect(subscriptions_info).to have_key(:data)
-      # expect(subscriptions_info[:data]).to have_key(:subscription_titles)
-      # expect(subscriptions_info[:data][:subscription_titles]).to be_a(Array)
-      # expect(subscriptions_info[:data][:subscription_titles].length).to eq(3)
-      # expect(subscriptions_info[:data][:subscription_titles][1]).to eq("My Chai bundle")
       expect(subscriptions_info[:data]).to have_key(:subscriptions)
       subscriptions_info[:data][:subscriptions].each do |subscription|
         expect(subscription).to have_key(:title)
@@ -85,7 +81,6 @@ RSpec.describe "SubscriptionsController requests", type: :request do
 
     context "sad paths" do
       it "invalid ID / subscription not found" do
-        #Invalid / not found ID
         invalid_id = 10000
         get api_v1_subscription_path(invalid_id)
         error_message = JSON.parse(response.body, symbolize_names: true)   
@@ -98,9 +93,7 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         expect(error_message[:message]).to eq("Couldn't find Subscription with 'id'=#{invalid_id}")
       end
 
-
       #No associated customers or teas gives appropriate error / JSON response
-
     end
   end
 
@@ -108,11 +101,8 @@ RSpec.describe "SubscriptionsController requests", type: :request do
     context "happy paths" do
       it "successfully cancels an active subscription" do
         #Cancel the Earl Grey for Picard - i.e. something that would NEVER happen
-        #Do I need more detailed headers / is it better practice?  Or is the lower one truly the same (just shorthand)?
-        # headers = {"CONTENT_TYPE" => "application/json"}
-        # patch api_v1_subscription_path(@subscription1.id), params: JSON.generate(update_params), headers: headers
         update_params = { status: "cancelled" }
-        patch api_v1_subscription_path(@subscription1.id), params: update_params, as: :json
+        patch api_v1_subscription_path(@subscription1.id), params: update_params, as: :json     #Are more detailed headers ever necessary here?
         updated_subscription_info = JSON.parse(response.body, symbolize_names: true)
         
         expect(response).to be_successful
@@ -123,6 +113,16 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         expect(updated_subscription_info[:data][:old_status]).to eq("active")
         expect(updated_subscription_info[:data]).to have_key(:new_status)
         expect(updated_subscription_info[:data][:new_status]).to eq("cancelled")
+      end
+
+      it "no error occurs when status is set to same as before" do
+        #Picard wants to be SURE he's still subscribed
+        update_params = { status: "active" }
+        patch api_v1_subscription_path(@subscription1.id), params: update_params, as: :json     #Are more detailed headers ever necessary here?
+        updated_subscription_info = JSON.parse(response.body, symbolize_names: true)
+
+        expect(response).to be_successful
+        expect(updated_subscription_info[:data][:old_status]).to eq(updated_subscription_info[:data][:new_status])
       end
 
     end
@@ -167,6 +167,7 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         expect(updated_subscription_info[:data][:old_status]).to eq("active")
         expect(updated_subscription_info[:data][:new_status]).to eq("cancelled")
         expect(Subscription.find(@subscription2.id).customer_id).to eq(@customer2.id)
+        #Verify e.g. no new field exists in the DB due to the sneaky param
         expect{ (Subscription.pluck(:random_param)) }.to raise_error(ActiveRecord::StatementInvalid)
       end
 
@@ -176,7 +177,6 @@ RSpec.describe "SubscriptionsController requests", type: :request do
         error_message = JSON.parse(response.body, symbolize_names: true)
 
         expect(response).to_not be_successful
-        # expect(error_message[:key]).to eq("Oopsie")
         expect(error_message[:status]).to eq(422)
         expect(error_message[:message]).to eq("Validation failed: Status is not included in the list ('active' or 'cancelled').")
       end
