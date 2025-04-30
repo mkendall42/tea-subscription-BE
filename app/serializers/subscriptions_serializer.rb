@@ -1,9 +1,5 @@
 class SubscriptionsSerializer
   def self.format_subscriptions
-    titles = Subscription.all.map do |subscription|
-      subscription.title
-    end
-
     subscriptions_info = Subscription.all.map do |subscription|
       {
         title: subscription.title,
@@ -12,12 +8,6 @@ class SubscriptionsSerializer
       }
     end
 
-    # {
-    #   data: {
-    #     subscription_titles: titles,
-    #     total_subscriptions: Subscription.count
-    #   }
-    # }
     {
       data: {
         subscriptions: subscriptions_info,
