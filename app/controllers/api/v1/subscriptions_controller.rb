@@ -3,18 +3,16 @@ class Api::V1::SubscriptionsController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :invalid_status_param
 
   def index
-    #Get all subscriptions
     render json: SubscriptionsSerializer.format_subscriptions
   end
 
   def show
-    #Get details for one subscription
     subscription = Subscription.find(params[:id])
     render json: SubscriptionsSerializer.format_single_subscription(subscription)
   end
 
   def update
-    #update - change the status of one subscription (with validation)
+    #Change the status of one subscription (with validation)
     subscription = Subscription.find(params[:id])
     old_status = subscription.status
 
